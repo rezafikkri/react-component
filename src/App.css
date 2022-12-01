@@ -1,3 +1,16 @@
+.notification {
+  padding: 10px;
+  background-color: gray;
+}
+
+.is-success {
+  background-color: green;
+}
+
+.is-warning {
+  background-color: orange;
+}
+
 .App {
   text-align: center;
 }

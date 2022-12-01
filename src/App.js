@@ -1,23 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+
+// Composition
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Welcome />
+      <p>Konten utama</p>
+      <Warning />
+    </div>
+  );
+}
+
+function Welcome() {
+  return (
+    <Notification status="success">
+      <h1>Selamat Datang</h1>
+      <p>Selamat Bergabung</p>
+    </Notification>
+  );
+}
+
+function Warning() {
+  return (
+    <Notification status="warning">
+      <p>Jangan lupa bayar hutang</p>
+    </Notification>
+  );
+}
+
+function Notification(props) {
+  return (
+    <div className={`notification is-${props.status}`}>
+      {props.children}
     </div>
   );
 }
