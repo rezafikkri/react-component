@@ -1,39 +1,54 @@
+import React from 'react';
 import './App.css';
 
-// Composition
+// Context
+// 1. Membuat context
+const MyContext = React.createContext();
 
 function App() {
+  const state = {
+    color: 'black',
+    info: 'warning',
+  };
   return (
-    <div className="App">
-      <Welcome />
-      <p>Konten utama</p>
-      <Warning />
-    </div>
+    <MyContext.Provider className="App" value={state}>
+      <header>
+        <Navigation />
+      </header>
+    </MyContext.Provider>
   );
 }
 
-function Welcome() {
+function Navigation() {
   return (
-    <Notification status="success">
-      <h1>Selamat Datang</h1>
-      <p>Selamat Bergabung</p>
-    </Notification>
+    <nav>
+      <a href="">Home</a>
+      <a href="">Contact</a>
+
+      <Search />
+      <Button />
+    </nav>
   );
 }
 
-function Warning() {
-  return (
-    <Notification status="warning">
-      <p>Jangan lupa bayar hutang</p>
-    </Notification>
-  );
+class Search extends React.Component {
+  static contextType = MyContext;
+
+  render() {
+    return (
+      <div>
+        <label>Search</label>
+        <input type="search" placeholder={this.context.color}/>
+      </div>
+    );
+  }
 }
 
-function Notification(props) {
+function Button() { 
   return (
-    <div className={`notification is-${props.status}`}>
-      {props.children}
-    </div>
+    <MyContext.Consumer>
+      {context => <button>Warna yang kita dapat adalah {context.color} & infonya {context.info}</button>} 
+    </MyContext.Consumer>
   );
 }
 
