@@ -1,55 +1,32 @@
 import React from 'react';
 import './App.css';
 
-// Context
-// 1. Membuat context
-const MyContext = React.createContext();
+// HOC: Higher-Order Components
 
-function App() {
-  const state = {
-    color: 'black',
-    info: 'warning',
-  };
-  return (
-    <MyContext.Provider className="App" value={state}>
-      <header>
-        <Navigation />
-      </header>
-    </MyContext.Provider>
-  );
-}
+const withUser = (WrappedComponent) => {
+  class WithUser extends React.Component {
+    constructor(props) {
+      super(props);
 
-function Navigation() {
-  return (
-    <nav>
-      <a href="">Home</a>
-      <a href="">Contact</a>
+      this.state = {
+        user: 'RezaFikkri',
+      };
+    }
 
-      <Search />
-      <Button />
-    </nav>
-  );
-}
-
-class Search extends React.Component {
-  static contextType = MyContext;
-
-  render() {
-    return (
-      <div>
-        <label>Search</label>
-        <input type="search" placeholder={this.context.color}/>
-      </div>
-    );
+    render() {
+      return <WrappedComponent user={this.state.user} {...this.props} />
+    }
   }
-}
 
-function Button() { 
+  return WithUser;
+};
+
+function App(props) {
   return (
-    <MyContext.Consumer>
-      {context => <button>Warna yang kita dapat adalah {context.color} & infonya {context.info}</button>} 
-    </MyContext.Consumer>
+    <div>
+      I am app {props.user}
+    </div>
   );
 }
 
-export default App;
+export default withUser(App);
