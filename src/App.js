@@ -1,59 +1,56 @@
 import React from 'react';
 import './App.css';
 
-// HOC: Higher-Order Components - Local Storage
+// HOC dan Context
+const AuthContext = React.createContext();
 
-function withLocalStorage(WrappedComponent) {
+function withAuth(WrappedComponent) {
   return class extends React.Component {
-    get(key) {
-      return localStorage.getItem(key);
-    }
-
-    save(key, value) {
-      localStorage.setItem(key, value);
-    }
-
-    remove(key) {
-      localStorage.removeItem(key);
-    }
-
     render() {
-      return <WrappedComponent get={this.get} save={this.save} remove={this.remove} {...this.props} />
+      return (
+        <AuthContext.Consumer>
+          {context => <WrappedComponent {...this.props} {...context} />}
+        </AuthContext.Consumer>
+      );
     }
   }
 }
 
-class User extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ''
+      username: 'randomUsername'
     };
-  }
-
-  componentDidMount() {
-    const name = this.props.get('name');
-
-    if (!name) {
-      // load nama dari API/Database
-      this.props.save('name', 'user_random');
-      this.setState({
-        name: 'user_random'
-      });
-    } else {
-      this.setState({
-        name: this.props.get('name')
-      });
-    }
   }
 
   render() {
     return (
-      <div>
-        I am app {this.state.name}
-      </div>
+      <AuthContext.Provider value={this.state}>
+        <h1>I am App</h1>
+        <Navigation />
+      </AuthContext.Provider>
     );
   }
 }
 
-export default withLocalStorage(User);
+function Navigation() {
+  return (
+    <nav>
+      <a href="#">Home</a>
+      <a href="/kontak">Kontak</a>
+      <hr />
+      <Button theme="dark" type="warning" />
+    </nav>
+  );
+}
+
+function ButtonBase(props) {
+  return (
+    <button className={props.theme}>Current Login: {props.username}</button>
+  );
+}
+
+const Button = withAuth(ButtonBase);
+
+export default App;
