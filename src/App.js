@@ -1,56 +1,55 @@
 import React from 'react';
 import './App.css';
 
-// HOC dan Context
-const AuthContext = React.createContext();
+// Render Props
 
-function withAuth(WrappedComponent) {
-  return class extends React.Component {
-    render() {
-      return (
-        <AuthContext.Consumer>
-          {context => <WrappedComponent {...this.props} {...context} />}
-        </AuthContext.Consumer>
-      );
-    }
-  }
-}
-
-class App extends React.Component {
+class Amount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'randomUsername'
-    };
+      amount: 0
+    }
+  }
+
+  handleOnIncrement = () => {
+    this.setState(state => ({ amount: state.amount + 1 }));
+  }
+
+  handleOnDecrement = () => {
+    this.setState(state => ({ amount: state.amount - 1 }));
   }
 
   render() {
     return (
-      <AuthContext.Provider value={this.state}>
-        <h1>I am App</h1>
-        <Navigation />
-      </AuthContext.Provider>
+      <div>
+        <button type='button' onClick={this.handleOnDecrement}> - </button>
+        <button type='button' onClick={this.handleOnIncrement}> + </button>
+
+        {this.props.render(this.state.amount)}
+      </div>
     );
   }
 }
 
-function Navigation() {
-  return (
-    <nav>
-      <a href="#">Home</a>
-      <a href="/kontak">Kontak</a>
-      <hr />
-      <Button theme="dark" type="warning" />
-    </nav>
-  );
+function Rupiah(props) {
+  return <h1>Rupiah = {props.amount}</h1>;
 }
 
-function ButtonBase(props) {
-  return (
-    <button className={props.theme}>Current Login: {props.username}</button>
-  );
+function Dollar(props) {
+  return <h1>Dollar = {props.amount * 14000}</h1>;
 }
 
-const Button = withAuth(ButtonBase);
+class App extends React.Component {
+  render() {
+    return (
+      <Amount render={amount => (
+        <div>
+          <Rupiah amount={amount} />
+          <Dollar amount={amount} />
+        </div>
+      )} />
+    );
+  }
+}
 
 export default App;
